@@ -79,6 +79,49 @@ To ensure predictable syscall behavior with `O_DIRECT` (DirectIO) and aligned me
 
 ---
 
+## Raw Stats
+
+```bash
+Running tool: /usr/local/go/bin/go test -benchmem -run=^$ -bench ^BenchmarkMemtable_Write16KBWorkload$ github.com/Meesho/BharatMLStack/ssd-cache/internal/memtable
+
+goos: linux
+goarch: amd64
+pkg: github.com/Meesho/BharatMLStack/ssd-cache/internal/memtable
+cpu: AMD Ryzen 7 9800X3D 8-Core Processor           
+BenchmarkMemtable_Write16KBWorkload/64KB-NO-DSYNC-8         	     950	   1273903 ns/op	  15532032 file_size	       237.0 flushes	       195.8 flushes/sec	       785.0 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/128KB-NO-DSYNC-8        	    2079	    637656 ns/op	  33947648 file_size	       259.0 flushes	       195.4 flushes/sec	      1568 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/256KB-NO-DSYNC-8        	    4028	    311103 ns/op	  65798144 file_size	       251.0 flushes	       200.3 flushes/sec	      3214 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/512KB-NO-DSYNC-8        	    8194	    153871 ns/op	 134217728 file_size	       256.0 flushes	       203.0 flushes/sec	      6499 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/1024KB-NO-DSYNC-8       	   15468	     78317 ns/op	 252706816 file_size	       241.0 flushes	       198.9 flushes/sec	     12769 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/2048KB-NO-DSYNC-8       	   30043	     39979 ns/op	 490733568 file_size	       234.0 flushes	       194.8 flushes/sec	     25013 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/4096KB-NO-DSYNC-8       	   56930	     21319 ns/op	 931135488 file_size	       222.0 flushes	       182.9 flushes/sec	     46907 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/8192KB-NO-DSYNC-8       	  103630	     11835 ns/op	1694498816 file_size	       202.0 flushes	       164.7 flushes/sec	     84494 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/16384KB-NO-DSYNC-8      	  175530	      7200 ns/op	2868903936 file_size	       171.0 flushes	       135.3 flushes/sec	    138896 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/32768KB-NO-DSYNC-8      	  271888	      5852 ns/op	4429185024 file_size	       132.0 flushes	        82.96 flushes/sec	    170877 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/65536KB-NO-DSYNC-8      	  235149	      4690 ns/op	3825205248 file_size	        57.00 flushes	        51.68 flushes/sec	    213214 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/131072KB-NO-DSYNC-8     	  304314	      3995 ns/op	4966055936 file_size	        37.00 flushes	        30.43 flushes/sec	    250319 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/262144KB-NO-DSYNC-8     	  542956	     11334 ns/op	8858370048 file_size	        33.00 flushes	         5.362 flushes/sec	     88229 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/524288KB-NO-DSYNC-8     	  540237	     12267 ns/op	8589934592 file_size	        16.00 flushes	         2.414 flushes/sec	     81517 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/1048576KB-NO-DSYNC-8    	  555834	     11945 ns/op	8589934592 file_size	         8.000 flushes	         1.205 flushes/sec	     83717 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/64KB-DSYNC-8            	     591	   2073246 ns/op	   9633792 file_size	       147.0 flushes	       120.0 flushes/sec	       482.3 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/128KB-DSYNC-8           	    1215	   1030739 ns/op	  19791872 file_size	       151.0 flushes	       120.6 flushes/sec	       970.2 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/256KB-DSYNC-8           	    2455	    517106 ns/op	  40108032 file_size	       153.0 flushes	       120.5 flushes/sec	      1934 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/512KB-DSYNC-8           	    5034	    254432 ns/op	  82313216 file_size	       157.0 flushes	       122.6 flushes/sec	      3930 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/1024KB-DSYNC-8          	   10000	    130561 ns/op	 163577856 file_size	       156.0 flushes	       119.5 flushes/sec	      7659 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/2048KB-DSYNC-8          	   18921	     65849 ns/op	 308281344 file_size	       147.0 flushes	       118.0 flushes/sec	     15186 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/4096KB-DSYNC-8          	   30013	     40110 ns/op	 490733568 file_size	       117.0 flushes	        97.19 flushes/sec	     24932 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/8192KB-DSYNC-8          	   49298	     24268 ns/op	 805306368 file_size	        96.00 flushes	        80.24 flushes/sec	     41206 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/16384KB-DSYNC-8         	   66595	     19670 ns/op	1090519040 file_size	        65.00 flushes	        49.62 flushes/sec	     50840 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/32768KB-DSYNC-8         	   91797	     15063 ns/op	1476395008 file_size	        44.00 flushes	        31.82 flushes/sec	     66387 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/65536KB-DSYNC-8         	   97675	     13579 ns/op	1543503872 file_size	        23.00 flushes	        17.34 flushes/sec	     73646 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/131072KB-DSYNC-8        	   92379	     13087 ns/op	1476395008 file_size	        11.00 flushes	         9.099 flushes/sec	     76413 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/262144KB-DSYNC-8        	  561945	     13043 ns/op	9126805504 file_size	        34.00 flushes	         4.639 flushes/sec	     76672 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/524288KB-DSYNC-8        	  562118	     12958 ns/op	9126805504 file_size	        17.00 flushes	         2.334 flushes/sec	     77174 records/sec	       0 B/op	       0 allocs/op
+BenchmarkMemtable_Write16KBWorkload/1048576KB-DSYNC-8       	  559707	     12165 ns/op	8589934592 file_size	         8.000 flushes	         1.175 flushes/sec	     82203 records/sec	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/Meesho/BharatMLStack/ssd-cache/internal/memtable	78.589s
+```
+
 ## 🧪 Design Inspiration
 
 This experiment was inspired by **ScyllaDB’s core-local architecture**:
