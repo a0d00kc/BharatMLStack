@@ -17,6 +17,7 @@ const (
 	O_WRONLY  = syscall.O_WRONLY
 	O_APPEND  = syscall.O_APPEND
 	O_CREAT   = syscall.O_CREAT
+	O_DSYNC   = syscall.O_DSYNC
 	FILE_MODE = 0644
 )
 
@@ -37,11 +38,11 @@ func NewCache(capacity int64) *Cache {
 	filename := filepath.Join(tmpDir, "test_memtable.dat")
 
 	// Open file with DIRECT_IO, WRITE_ONLY, APPEND_ONLY flags
-	flags := O_DIRECT | O_WRONLY | O_APPEND | O_CREAT
+	flags := O_DIRECT | O_WRONLY | O_APPEND | O_CREAT | O_DSYNC
 	fd, err := syscall.Open(filename, flags, FILE_MODE)
 	if err != nil {
 		// If DIRECT_IO is not supported, fall back to regular flags
-		log.Println("DIRECT_IO not supported, falling back to regular flags: %v", err)
+		log.Printf("DIRECT_IO not supported, falling back to regular flags: %v", err)
 		flags = O_WRONLY | O_APPEND | O_CREAT
 		fd, err = syscall.Open(filename, flags, FILE_MODE)
 		if err != nil {
@@ -64,5 +65,17 @@ func NewCache(capacity int64) *Cache {
 
 func (c *Cache) Put(key string, value []byte) {
 	offset, length := c.memtable.Put(value)
-	c.index.Put(key, []byte{byte(offset), byte(length)})
+	c.index.Put(key, offset, length)
+}
+
+func (c *Cache) Get(key string) []byte {
+	b, ok := c.index.Get(key)
+	if !ok {
+		return nil
+	}
+	return c.memtable.Get(int64(b[0:8]), int64(b[8:16]))
+}
+
+func (c *Cache) Discard() {
+	c.memtable.Discard()
 }

@@ -644,6 +644,7 @@ func BenchmarkMemtable_Write16KBWorkload(b *testing.B) {
 			b.ReportMetric(float64(memtable.flushCount), "flushes")
 			b.ReportMetric(float64(memtable.flushCount)/elapsed.Seconds(), "flushes/sec")
 			b.ReportMetric(recordsPerSecond, "records/sec")
+			b.ReportMetric(recordsPerSecond*16*1024/(1024*1024), "MB/sec")
 			fileInfo, _ := file.Stat()
 			b.ReportMetric(float64(fileInfo.Size()), "file_size")
 		})
