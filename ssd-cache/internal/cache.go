@@ -22,14 +22,16 @@ const (
 )
 
 type Cache struct {
-	memtable *memtable.Memtable
-	index    *index.Index
+	memtableIdMap  map[int64]*memtable.Memtable
+	activeMemtable *memtable.Memtable
+	flushablell    *memtable.Memtable
+	index          *index.Index
 }
 
-func NewCache(capacity int64) *Cache {
+func NewCache(memtableCapacity int64, maxFlushableMemtables int64, maxMemtables int64) *Cache {
 	allocator := allocator.NewAlignedPageAllocator(allocator.AlignedPageAllocatorConfig{
 		PageSizeAlignement: 4096,
-		Multiplier:         int(capacity / 4096),
+		Multiplier:         int(memtableCapacity / 4096),
 		MaxPages:           1000,
 	})
 
@@ -55,11 +57,13 @@ func NewCache(capacity int64) *Cache {
 		log.Fatalf("Failed to create file from fd")
 	}
 
-	memtable := memtable.NewMemtableV2(file, 0, capacity, allocator)
+	memtable := memtable.NewMemtableV2(file, 0, memtableCapacity, allocator)
 	index := index.NewIndex()
 	return &Cache{
-		memtable: memtable,
-		index:    index,
+		memtableIdMap:  make(map[int64]*memtable.Memtable),
+		activeMemtable: memtable,
+		flushablell:    nil,
+		index:          index,
 	}
 }
 
@@ -69,11 +73,7 @@ func (c *Cache) Put(key string, value []byte) {
 }
 
 func (c *Cache) Get(key string) []byte {
-	b, ok := c.index.Get(key)
-	if !ok {
-		return nil
-	}
-	return c.memtable.Get(int64(b[0:8]), int64(b[8:16]))
+	panic("not implemented")
 }
 
 func (c *Cache) Discard() {

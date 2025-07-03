@@ -16,6 +16,8 @@ type Memtable struct {
 	readyForFlush bool
 	flushCount    int64
 	allocator     *allocator.AlignedPageAllocator
+	Next          *Memtable
+	Id            int64
 }
 
 func NewMemtable(file *os.File, fileOffset int64, capacity int64) *Memtable {
@@ -37,7 +39,7 @@ func NewMemtable(file *os.File, fileOffset int64, capacity int64) *Memtable {
 	}
 }
 
-func NewMemtableV2(file *os.File, fileOffset int64, capacity int64, allocator *allocator.AlignedPageAllocator) *Memtable {
+func NewMemtableV2(file *os.File, fileOffset int64, capacity int64, allocator *allocator.AlignedPageAllocator, idx int64) *Memtable {
 	page, _ := allocator.Get()
 	return &Memtable{
 		file:          file,
@@ -48,6 +50,7 @@ func NewMemtableV2(file *os.File, fileOffset int64, capacity int64, allocator *a
 		readyForFlush: false,
 		flushCount:    0,
 		allocator:     allocator,
+		Id:            idx,
 	}
 }
 
@@ -59,7 +62,7 @@ func (m *Memtable) Put(buf []byte) (int64, int64) {
 	offset := m.size
 	if offset+int64(len(buf)) > m.capacity {
 		m.readyForFlush = true
-		m.Flush()
+		return -1, -1
 	}
 	copy(m.page.Buf[offset:], buf)
 	m.size += int64(len(buf))

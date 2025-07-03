@@ -46,19 +46,21 @@ func NewIndex() *Index {
 	}
 }
 
-func (i *Index) Put(key string, offset, size int64) {
+func (i *Index) Put(key string, offset, size int64, fileOffset int64, memtableId int64) {
 	b := make([]byte, 16)
 	ByteOrder.PutInt64(b[0:8], offset)
 	ByteOrder.PutInt64(b[8:16], size)
+	ByteOrder.PutInt64(b[16:24], fileOffset)
+	ByteOrder.PutInt64(b[24:32], memtableId)
 	i.idx[key] = b
 }
 
-func (i *Index) Get(key string) (int64, int64, bool) {
+func (i *Index) Get(key string) (int64, int64, int64, int64, bool) {
 	value, ok := i.idx[key]
 	if !ok {
-		return 0, 0, false
+		return 0, 0, 0, 0, false
 	}
-	return ByteOrder.Int64(value[0:8]), ByteOrder.Int64(value[8:16]), true
+	return ByteOrder.Int64(value[0:8]), ByteOrder.Int64(value[8:16]), ByteOrder.Int64(value[16:24]), ByteOrder.Int64(value[24:32]), true
 }
 
 func (i *Index) Delete(key string) {
